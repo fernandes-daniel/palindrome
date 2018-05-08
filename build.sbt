@@ -12,6 +12,7 @@ libraryDependencies += "com.typesafe.akka" %% "akka-stream" % akkaVersion
 libraryDependencies += "com.typesafe.akka" %% "akka-http-spray-json" % akkaHttpVersion
 libraryDependencies += "joda-time" % "joda-time" % "2.9.4"
 libraryDependencies += "com.google.inject" % "guice" % "4.2.0"
+libraryDependencies += "ch.megard" %% "akka-http-cors" % "0.3.0"
 
 libraryDependencies += "org.scalatest"     %% "scalatest"            % "3.0.3"         % Test
 libraryDependencies += "org.mockito"       % "mockito-core"          % "2.7.22"        % Test

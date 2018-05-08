@@ -1,0 +1,24 @@
+{
+  "name": "palindrome",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "node ./node/server.js",
+    "build": "./node_modules/webpack-cli/bin/webpack.js"
+  },
+  "author": "Daniel Fernandes",
+  "dependencies": {
+    "express": "^4.16.3",
+    "nunjucks": "^3.1.2",
+    "react": "^16.3.2",
+    "react-dom": "^16.3.2"
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.4",
+    "babel-plugin-transform-react-jsx": "^6.24.1",
+    "babel-preset-es2015": "^6.24.1",
+    "webpack": "^4.5.0",
+    "webpack-cli": "^2.0.14"
+  }
+}
