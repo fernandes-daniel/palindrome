@@ -5,6 +5,7 @@
   
 - Testing:
   Run ./test.sh  
+  NOTE: Sometimes Sbt hangs while running sbt test. If this happens please run the tests on IntelijIDEA.
 
 - Running:
   Run ./runApi.sh to start off the Akka Http server and ./runUi.sh to start off the Node/React user interface
