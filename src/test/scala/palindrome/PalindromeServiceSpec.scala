@@ -2,14 +2,14 @@ package palindrome
 
 import org.mockito.Mockito._
 import org.scalatest.{Matchers, WordSpec}
-import palindrome.PalindromeService.IsPalindrome
+import palindrome.PalindromeService.{GetPalindromePageResult, ProcessPalindromeCandidateResult}
 import testutil.MockResetBeforeEach
-import testutil.builders.PalindromeBuilder
+import testutil.builders.{PalindromeBuilder, PalindromePageBuilder}
 
 class PalindromeServiceSpec extends WordSpec with Matchers with MockResetBeforeEach {
 
   val palindromeProcessor = mockWithReset(classOf[PalindromeProcessor])
-  val palindromeFilter = mockWithReset(classOf[PalindromeFilter])
+  val palindromeFilter = mockWithReset(classOf[PagedPalindromeFilter])
 
   val palindromeService = new PalindromeService(palindromeProcessor, palindromeFilter)
 
@@ -19,21 +19,23 @@ class PalindromeServiceSpec extends WordSpec with Matchers with MockResetBeforeE
 
       when(palindromeProcessor.process("kayak")).thenReturn(true)
 
-      palindromeService.processPalindromeCandidate("kayak") shouldBe IsPalindrome(true)
+      palindromeService.processPalindromeCandidate("kayak") shouldBe ProcessPalindromeCandidateResult(true)
 
     }
   }
 
-  "getPalindromes" should {
+  "getPalindromePage" should {
 
-    "call the palindromes filter with the saved palindromes and discard the received date in the result" in {
+    "call the palindromes paged filter with the saved palindromes and discard the received date in the result" in {
       val savedPalindromes = List(PalindromeBuilder("kayak"),PalindromeBuilder("anna"))
 
       when(palindromeProcessor.getSavedPalindromes).thenReturn(savedPalindromes)
 
-      when(palindromeFilter.filter(savedPalindromes, 1)).thenReturn( List(PalindromeBuilder("anna")) )
+      when(palindromeFilter.filter(savedPalindromes, 1, 3)).thenReturn(
+        PalindromePageBuilder(palindromes = List(PalindromeBuilder("anna")), totalPalindromes = 10)
+      )
 
-      palindromeService.getPalindromes(1) shouldBe List("anna")
+      palindromeService.getPalindromePage(1, 3) shouldBe GetPalindromePageResult(List("anna"), 10)
     }
   }
 }

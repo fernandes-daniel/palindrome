@@ -3,8 +3,7 @@ package palindrome
 import akka.http.scaladsl.testkit.ScalatestRouteTest
 import org.mockito.Mockito._
 import org.scalatest.{Matchers, WordSpec}
-import palindrome.PalindromeService.IsPalindrome
-import spray.json.DefaultJsonProtocol._
+import palindrome.PalindromeService.{GetPalindromePageResult, ProcessPalindromeCandidateResult}
 import testutil.MockResetBeforeEach
 
 class RoutesProviderSpec extends WordSpec with Matchers with MockResetBeforeEach with ScalatestRouteTest
@@ -17,23 +16,23 @@ class RoutesProviderSpec extends WordSpec with Matchers with MockResetBeforeEach
   "The service" should {
 
     "return the list of palindromes on GET of /palindrome?pageNumber=x" in{
-      val savedPalindromes = List("kayak", "Anna")
+      val getPalindromePageResult = GetPalindromePageResult(List("kayak", "Anna"),10)
 
-      when(palindromeService.getPalindromes(0)).thenReturn(savedPalindromes)
+      when(palindromeService.getPalindromePage(0, 2)).thenReturn(getPalindromePageResult)
 
-      Get("/palindrome?pageNumber=0") ~> routesProvider.routes ~> check{
-        responseAs[List[String]] shouldBe List("kayak", "Anna")
+      Get("/palindrome?pageNumber=0&pageSize=2") ~> routesProvider.routes ~> check{
+        responseAs[GetPalindromePageResult] shouldBe getPalindromePageResult
       }
 
-      verify(palindromeService).getPalindromes(0)
+      verify(palindromeService).getPalindromePage(0, 2)
       verifyNoMoreInteractions(palindromeService)
     }
 
     "return true when posted a valid palindrome" in {
-      when(palindromeService.processPalindromeCandidate("kayak")).thenReturn(IsPalindrome(true))
+      when(palindromeService.processPalindromeCandidate("kayak")).thenReturn(ProcessPalindromeCandidateResult(true))
 
       Post("/palindrome", "kayak") ~> routesProvider.routes ~> check{
-        responseAs[IsPalindrome].isPalindrome shouldBe true
+        responseAs[ProcessPalindromeCandidateResult].isPalindrome shouldBe true
       }
 
       verify(palindromeService).processPalindromeCandidate("kayak")

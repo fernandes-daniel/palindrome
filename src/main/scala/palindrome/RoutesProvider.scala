@@ -25,10 +25,11 @@ class RoutesProvider @Inject()(palindromeService: PalindromeService) extends Jso
           } ~
             get {
               parameters(
-                'pageNumber.as[Int]
+                'pageNumber.as[Int],
+                'pageSize.as[Int]
               ) {
-                pageNumber => {
-                  complete(palindromeService.getPalindromes(pageNumber))
+                (pageNumber, pageSize) => {
+                  complete(palindromeService.getPalindromePage(pageNumber, pageSize))
                 }
               }
             }

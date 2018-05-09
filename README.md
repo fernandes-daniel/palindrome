@@ -1,9 +1,12 @@
 **Palindrome App**
 
-- Building the app:
+- Building:
   From the root of the project run ./build.sh
+  
+- Testing:
+  From the root of the project run ./test.sh  
 
-- Running the app:
+- Running:
   From the root of the project run ./runApi.sh to start off the Akka Http server
   From the root of the project run ./runUi.sh to start off the Node/React user interface
   

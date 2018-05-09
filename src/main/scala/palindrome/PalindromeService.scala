@@ -1,26 +1,31 @@
 package palindrome
 
 import javax.inject.{Inject, Singleton}
-import palindrome.PalindromeService.IsPalindrome
+import palindrome.PalindromeService.{GetPalindromePageResult, ProcessPalindromeCandidateResult}
 
 @Singleton
 class PalindromeService @Inject()(palindromeProcessor: PalindromeProcessor,
-                                  palindromeFilter: PalindromeFilter) {
-  def processPalindromeCandidate(palindromeCandidate: String): IsPalindrome = {
-    IsPalindrome(
+                                  pagedPalindromeFilter: PagedPalindromeFilter) {
+  def processPalindromeCandidate(palindromeCandidate: String): ProcessPalindromeCandidateResult = {
+    ProcessPalindromeCandidateResult(
       palindromeProcessor.process(palindromeCandidate)
     )
   }
 
+  def getPalindromePage(pageNumber: Int, pageSize: Int): GetPalindromePageResult = {
+    val palindromePage = pagedPalindromeFilter
+      .filter(palindromeProcessor.getSavedPalindromes, pageNumber, pageSize)
 
-  def getPalindromes(pageNumber: Int): List[String] = {
-    palindromeFilter
-      .filter(palindromeProcessor.getSavedPalindromes, pageNumber)
-      .map(_.data)
+    GetPalindromePageResult(
+      palindromePage.palindromes.map(_.data),
+      palindromePage.totalPalindromes
+    )
   }
 
 }
 
 object PalindromeService {
-  case class IsPalindrome(isPalindrome: Boolean)
+  case class ProcessPalindromeCandidateResult(isPalindrome: Boolean)
+
+  case class GetPalindromePageResult(palindromes:List[String], totalPalindromes:Int)
 }

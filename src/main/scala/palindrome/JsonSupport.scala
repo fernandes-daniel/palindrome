@@ -1,9 +1,10 @@
 package palindrome
 
 import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport
-import palindrome.PalindromeService.IsPalindrome
+import palindrome.PalindromeService.{GetPalindromePageResult, ProcessPalindromeCandidateResult}
 import spray.json.DefaultJsonProtocol._
 
 trait JsonSupport extends SprayJsonSupport{
-  implicit val isPalindromeFormat = jsonFormat1(IsPalindrome)
+  implicit val processPalindromeCandidateResultFormat = jsonFormat1(ProcessPalindromeCandidateResult)
+  implicit val getPalindromePageResultFormat = jsonFormat2(GetPalindromePageResult)
 }

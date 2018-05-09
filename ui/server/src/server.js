@@ -4,7 +4,7 @@ const server   = require('http').createServer(app)
 const nunjucks = require('nunjucks')
 const port     = 3000
 
-nunjucks.configure('node/views', {autoescape: true, express: app})
+nunjucks.configure('ui/server/src/views', {autoescape: true, express: app})
 
 app.use(express.static('public'))
 
