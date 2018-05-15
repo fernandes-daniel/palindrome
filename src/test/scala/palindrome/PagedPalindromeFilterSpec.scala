@@ -3,7 +3,7 @@ package palindrome
 import org.joda.time.DateTime
 import org.scalatest.{Matchers, WordSpec}
 
-class PagedPalindromeFilterSpec extends WordSpec with Matchers{
+class PagedPalindromeFilterSpec extends WordSpec with Matchers {
 
   def setupScenario(maxPalindromesPerRequest:Int = 100,
                     maxPalindromeAgeInMinutes:Int = 10) = new {
@@ -66,7 +66,70 @@ class PagedPalindromeFilterSpec extends WordSpec with Matchers{
         PalindromePage(List( palindrome3, palindrome4 ), 1, 5)
     }
 
+    /**
+      * Total palindromes should be the number of valid palindromes (that haven't expired)
+      * in the system, instead we get a capped counter because the request will only ever
+      * return 100 at max (the default). The max returned items in the request differs from the
+      * total number of items in the system.
+      */
+    "should give me the correct number of elements in the system (total)" in {
+      val scenario = setupScenario()
+      val l = (0 until 1000).map { i=>
+        Palindrome(s"palindrome$i", new DateTime())
+      }.toList
 
+      scenario.fixture.filter(
+        l,
+        1,
+        2
+      ).totalPalindromes shouldBe
+        1000
+    }
+
+    "should give me page 51 with an element" in {
+      val scenario = setupScenario()
+      val l = (0 until 101).map { i=>
+        Palindrome(s"palindrome$i", new DateTime())
+      }.toList
+
+      scenario.fixture.filter(
+        l,
+        50,
+        2
+      ).palindromes.length should be(1)
+    }
+
+    /**
+      * Performance is going to suffer here because we're scanning the whole list of items
+      * every time we want to filter out 1 element.
+      */
+    "should respond in a good amount of time" in {
+
+      val scenario = setupScenario()
+      val l = (0 until 1000000).map { i=>
+        Palindrome(s"palindrome$i", new DateTime())
+      }.toList
+
+      val f = () => {
+        (0 until 100).foreach { _ =>
+          scenario.fixture.filter(
+            l,
+            1,
+            1
+          ).palindromes.length should be(1)
+        }
+
+      }
+      val takenInSeconds = time(f)().toFloat/1000000000
+      println(s"Time taken $takenInSeconds seconds")
+      takenInSeconds should be < 1.0F
+    }
+
+    def time[T](f: () => T): () => Long = {
+      val start = System.nanoTime()
+      f()
+      () => System.nanoTime()-start
+    }
 
 
   }
