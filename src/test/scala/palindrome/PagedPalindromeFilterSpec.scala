@@ -72,7 +72,7 @@ class PagedPalindromeFilterSpec extends WordSpec with Matchers {
       * return 100 at max (the default). The max returned items in the request differs from the
       * total number of items in the system.
       */
-    "should die when i write a massive test set" in {
+    "should give me the correct number of elements in the system (total)" in {
       val scenario = setupScenario()
       val l = (0 until 1000).map { i=>
         Palindrome(s"palindrome$i", new DateTime())
