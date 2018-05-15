@@ -47,6 +47,21 @@ class PalindromeProcessorSpec extends WordSpec with Matchers with MockResetBefor
       verifyZeroInteractions(palindromeFactory)
     }
 
+    /**
+      * struggles significantly here.
+      */
+    "add the same palindrome lots of times and we should only have 1 palindrome" in {
+      import org.mockito.Mockito._
+//      def ti
+
+      (0 until 10000).foreach { i =>
+        val s = Array.fill(10)("a").mkString
+        when(palindromeValidator.isPalindrome(s)).thenReturn(true)
+        palindromeProcessor.process(s) shouldBe true
+      }
+
+      palindromeProcessor.getSavedPalindromes.length shouldBe 1
+    }
 
 
   }
